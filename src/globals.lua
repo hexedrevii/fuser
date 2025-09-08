@@ -4,9 +4,9 @@ local globals = {
   ---@field set function
   ---@field renderWorld function
   canvas = {
-    x = 320, y = 180,
+    x = 128, y = 128,
     cx = 8, cy = 8,
-    body = love.graphics.newCanvas(320, 180)
+    body = love.graphics.newCanvas(128, 128)
   },
 }
 

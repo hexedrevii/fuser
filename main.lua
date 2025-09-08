@@ -1,7 +1,10 @@
 local world = require "src.world.world"
 local game  = require "src.world.game"
+local input = require "src.input"
 
 function love.load()
+  love.graphics.setDefaultFilter('nearest', 'nearest')
+
   world:set(game)
 end
 
@@ -11,4 +14,12 @@ end
 
 function love.draw()
   world:draw()
+end
+
+function love.keypressed(key)
+  input:keypressed(key)
+end
+
+function love.keyreleased(key)
+  input:keyreleased(key)
 end

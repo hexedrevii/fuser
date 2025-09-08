@@ -10,7 +10,7 @@
 local mapped = {}
 mapped.__index = mapped
 
-function mapped:new(width, height, map)
+function mapped.new(width, height, map)
   local r = {
     x = 0, y = 0,
     vx = 0, vy = 0,
@@ -47,6 +47,17 @@ function mapped:isSolidRect(x, y, layer)
     self:isTileSolid(x + self.w, y, layer) or
     self:isTileSolid(x + self.w, y + self.h, layer) or
     self:isTileSolid(x, y + self.h, layer)
+end
+
+function mapped:isOnFloor()
+  for _, layer in ipairs(self.layers) do
+    if self:isTileSolid(self.x + self.w - 1, self.y + self.h + 1, layer) or
+    self:isTileSolid(self.x, self.y + self.h + 1, layer) then
+      return true
+    end
+  end
+
+  return false
 end
 
 function mapped:moveAndSlide(dt)
