@@ -1,3 +1,4 @@
+local LoveDialogue = require "lib.LoveDialogue.LoveDialogue"
 local globals = {
   ---@class canvas
   ---@field getScale function
@@ -17,6 +18,41 @@ local globals = {
     orange = {0.93,0.61,0.36},
     lighYellow = {0.99,1.00,0.75},
     lightGreen = {0.43,0.72,0.66}
+  },
+
+  font = love.graphics.newFont('assets/pico-8.otf', 6),
+
+  ---@class dialogue
+  ---@field update function
+  ---@field draw function
+  ---@field play function
+  ---@field keypressed function
+  dialogue = nil,
+  dialogueConfig = {
+    boxHeight = 150,
+    boxColor  = {0.93,0.61,0.36, 1},
+    textColor = {0.99,1.00,0.75, 1},
+    typingSpeed = 0.05,
+    padding = 20,
+    autoLayoutEnabled = true,
+    skipKey = "f",
+    textSpeeds = {
+      slow = 0.08,
+      normal = 0.05,
+      fast = 0.02
+    },
+
+    letterSpacingLatin = 2,
+
+    initialSpeedSetting = "normal",
+    autoAdvance = false,
+    autoAdvanceDelay = 3.0,
+
+    plugins = {"FlowControl"},
+
+    -- NO FADES IT LOOKS UGLY
+    fadeInDuration = 0,
+    fadeOutDuration = 0,
   }
 }
 
@@ -43,6 +79,11 @@ function globals.canvas:renderWorld()
   -- Black
   love.graphics.clear(0, 0, 0)
   love.graphics.draw(self.body, x, y, 0, scale, scale)
+end
+
+---@param text string
+function globals:play(text)
+  self.dialogue = LoveDialogue.play(text, self.dialogueConfig)
 end
 
 return globals

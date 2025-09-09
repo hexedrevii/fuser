@@ -58,6 +58,7 @@
   <image source="../interactibles.png" width="8" height="8"/>
   <tile id="0">
    <properties>
+    <property name="dialogue" value="assets/dialogues/sword.ld"/>
     <property name="id" value="sword"/>
    </properties>
   </tile>

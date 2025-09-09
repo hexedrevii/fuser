@@ -1,6 +1,10 @@
-local world = require "src.world.world"
-local game  = require "src.world.game"
-local input = require "src.input"
+local world   = require "src.world.world"
+local game    = require "src.world.game"
+local input   = require "src.input"
+local flow    = require 'src.flowControl'
+local manager = require 'lib.LoveDialogue.PluginManager'
+local globals = require 'src.globals'
+
 
 function love.load()
   -- Better randomness
@@ -9,7 +13,11 @@ function love.load()
   -- Pixel art game
   love.graphics.setDefaultFilter('nearest', 'nearest')
 
+  -- Set font for drawing
   love.graphics.setNewFont('assets/pico-8.otf', 6)
+
+  -- Set flowControl plugin for dialogue
+  manager:register(flow)
 
   world:set(game)
 end
@@ -24,6 +32,10 @@ end
 
 function love.keypressed(key)
   input:keypressed(key)
+
+  if globals.dialogue then
+    globals.dialogue:keypressed(key)
+  end
 end
 
 function love.keyreleased(key)

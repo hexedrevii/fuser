@@ -158,6 +158,7 @@ return {
         {
           id = 0,
           properties = {
+            ["dialogue"] = "assets/dialogues/sword.ld",
             ["id"] = "sword"
           }
         }

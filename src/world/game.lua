@@ -96,9 +96,15 @@ function game:update(delta)
   local camY = __lerp(self.camera.y, targetY, delta * self.cameraSmoothness)
 
   self.camera:lookAt(camX, camY)
+
+  if globals.dialogue then
+    globals.dialogue:update(delta)
+  end
 end
 
 function game:draw()
+  love.graphics.setColor(1,1,1)
+
   love.graphics.clear(0, 0, 0)
 
   globals.canvas:set()
@@ -120,6 +126,10 @@ function game:draw()
 
   self.camera:detach()
   globals.canvas:renderWorld()
+
+  if globals.dialogue then
+    globals.dialogue:draw()
+  end
 end
 
 return game

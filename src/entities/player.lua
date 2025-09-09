@@ -65,11 +65,17 @@ function player:__findInteractible()
       local property = self:__getProperty(
         tx, ty,
         self.map.layers.interactibles,
-        "id"
+        'id'
       )
 
       if property then
-        return { id = property, x = tx, y = ty }
+        return { id = property, x = tx, y = ty,
+          dialogue = self:__getProperty(
+            tx, ty,
+            self.map.layers.interactibles,
+            'dialogue'
+          )
+        }
       end
     end
   end
@@ -105,6 +111,10 @@ function player:__input(delta)
         self.hasSword = true
       end
 
+      if self.inter.dialogue then
+        globals:play(self.inter.dialogue)
+      end
+
       self.map.layers.interactibles:setTileAtGridPosition(self.inter.x, self.inter.y, 0)
     end
   end
@@ -116,6 +126,7 @@ function player:fuse(fusion)
 end
 
 function player:update(delta)
+  if globals.dialogue then return end
   self.interactionBounds.x = math.floor(self.x - 8)
   self.interactionBounds.y = math.floor(self.y - 8)
 
