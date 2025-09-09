@@ -17,7 +17,7 @@ function player.new(map)
     love.graphics.newImage('assets/player/player_one.png')
   }
 
-  plr.spd = 100
+  plr.spd = 128
   plr.acc = 700
 
   plr.jmp = 200

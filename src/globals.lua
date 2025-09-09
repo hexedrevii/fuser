@@ -8,6 +8,16 @@ local globals = {
     cx = 8, cy = 8,
     body = love.graphics.newCanvas(128, 128)
   },
+
+  ---@class palette
+  ---@field orange number[]
+  ---@field lightYellow number[]
+  ---@field lightGreen number[]
+  palette = {
+    orange = {0.93,0.61,0.36},
+    lighYellow = {0.99,1.00,0.75},
+    lightGreen = {0.43,0.72,0.66}
+  }
 }
 
 globals.canvas.body:setFilter("nearest", "nearest")
