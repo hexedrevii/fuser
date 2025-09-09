@@ -9,6 +9,8 @@ function love.load()
   -- Pixel art game
   love.graphics.setDefaultFilter('nearest', 'nearest')
 
+  love.graphics.setNewFont('assets/pico-8.otf', 6)
+
   world:set(game)
 end
 

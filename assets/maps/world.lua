@@ -154,7 +154,14 @@ return {
       properties = {},
       wangsets = {},
       tilecount = 1,
-      tiles = {}
+      tiles = {
+        {
+          id = 0,
+          properties = {
+            ["id"] = "sword"
+          }
+        }
+      }
     }
   },
   layers = {
