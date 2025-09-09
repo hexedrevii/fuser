@@ -27,7 +27,7 @@ function player.new(map)
 
   plr.knownFusions = {}
   plr.activeFusion = playerFuse:set(plr)
-  plr.sprite = anim:new(love.graphics.newImage(fuseData[plr.activeFusion.id].spritePath), 8, 8, 1)
+  plr.sprite = anim:new(love.graphics.newImage(fuseData[plr.activeFusion.id].spritePath), 8, 8, 0.20)
 
   plr.interactionBounds = {
     x = plr.x - 8, y = plr.y - 8, w = 24, h = 24
