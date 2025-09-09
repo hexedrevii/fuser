@@ -90,7 +90,7 @@ function game:update(delta)
         x = math.floor(entity.x), y = math.floor(entity.y), w = entity.w, h = entity.h
       }
 
-      if entity.hp == nil then
+      if entity.hp == nil then -- We are seeing an innocent animal.
         if mathf.colRect(self.player.interactionBounds, rect) then
           self.msg = input.interact .. ' to fuse'
           if input:isPressed(input.interact) then
