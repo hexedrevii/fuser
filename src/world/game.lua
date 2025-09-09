@@ -37,6 +37,8 @@ function game:init()
     maxY = 64,
   }
 
+  self.msg = nil
+
   -- Find entities
   local entityLayer = self.map.layers.spawners
   for _, chunk in ipairs(entityLayer.chunks) do
@@ -68,6 +70,7 @@ function game:update(delta)
     entity:update(delta)
   end
 
+  self.msg = nil
   for _,entity in ipairs(self.entities) do
     if entity ~= self.player then
       local rect = {
@@ -75,6 +78,7 @@ function game:update(delta)
       }
 
       if mathf.colRect(self.player.interactionBounds, rect) then
+        self.msg = input.interact .. ' to fuse'
         if input:isPressed(input.interact) then
           self.player:fuse(entity.fuse)
         end
@@ -106,6 +110,12 @@ function game:draw()
 
   for _, entity in ipairs(self.entities) do
     entity:draw()
+  end
+
+  if self.msg then
+    love.graphics.setColor(globals.palette.lighYellow)
+    love.graphics.print(self.msg, math.floor(self.player.x - 15), math.floor(self.player.y + 10))
+    love.graphics.setColor(1,1,1)
   end
 
   self.camera:detach()

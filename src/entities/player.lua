@@ -4,6 +4,7 @@ local mathf  = require "src.mathf"
 local playerFuse = require "src.fusions.playerFuse"
 local anim       = require "src.anim"
 local fuseData   = require "src.fusions.fuseData"
+local globals    = require "src.globals"
 
 ---@class player : mapped
 ---@field sprite anim
@@ -157,7 +158,9 @@ function player:draw()
     end
 
     txt = txt .. input.interact .. ' to take.'
+    love.graphics.setColor(globals.palette.lighYellow)
     love.graphics.print(txt, math.floor(self.x - 15), math.floor(self.y + 10))
+    love.graphics.setColor(1,1,1)
   end
 end
 
