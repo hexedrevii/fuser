@@ -38,7 +38,7 @@ function frog.new(x, y, map)
 
   -- Every 1.5 seconds
   f.moveTimer = timer:new(1.5, function ()
-    -- Frog has a 1/5 chance to move
+    -- Frog has a 1/3 chance to move
     if math.random(3) == 3 then
       -- It picks a direction
       local dirChance = math.random(1, 2)

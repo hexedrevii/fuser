@@ -1,5 +1,6 @@
 local entityIds = {
-  frog = 'frogger'
+  frog = 'frogger',
+  slime = 'slime'
 }
 
 return entityIds

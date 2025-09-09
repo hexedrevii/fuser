@@ -30,12 +30,30 @@ function mathf.colRect(rect1, rect2)
     rect1.y + rect1.h > rect2.y
 end
 
+function mathf.colRectR(rx, ry, rw, rh, sx, sy, sw, sh)
+  return rx < sx + sw and
+    rx + rw > sx and
+    ry < sy + sh and
+    ry + rh > sy
+end
+
 ---Returns a float between two numbers
 ---@param min number
 ---@param max number
 ---@return number
 function mathf.random(min, max)
   return min + (max - min) * math.random()
+end
+
+
+function mathf.applyKnockback(entity, attackerX, attackerY, force)
+  local dx = entity.x - attackerX
+  local dy = entity.y - attackerY
+
+  local angle = math.atan2(dy, dx)
+
+  entity.vx = entity.vx + math.cos(angle) * force
+  entity.vy = entity.vy + math.cos(angle) * force
 end
 
 return mathf

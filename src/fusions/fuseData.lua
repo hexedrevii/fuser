@@ -7,6 +7,11 @@ local fuseData = {
   ['frog'] = {
     spritePath = 'assets/entities/frog.png',
     spd = 0.15
+  },
+
+  ['slime'] = {
+    spritePath = 'assets/entities/slime.png',
+    spd = 0.25
   }
 }
 

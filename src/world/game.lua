@@ -7,6 +7,7 @@ local rawWorld     = require "assets.maps.world"
 local entityIds    = require "src.entities.entityIds"
 local frog         = require "src.entities.frog"
 local input        = require "src.input"
+local slime        = require "src.entities.slime"
 
 local game = {}
 
@@ -14,13 +15,20 @@ local function __lerp(x, y, t)
   return x + (y - x) * t
 end
 
+function game:__debug_setPlayerPosition(x, y)
+  self.player.x = x * 8
+  self.player.y = y * 8
+end
+
 function game:init()
   self.entities = {}
 
   self.map = cartographer.load('assets/maps/world.lua')
-  self.player = player.new(self.map)
+  self.player = player.new(self.map, self)
   self.player.x = 6 * 8
   self.player.y = 11 * 8
+
+  self:__debug_setPlayerPosition(51, 12)
 
   self.mapX = rawWorld.width
   self.mapY = rawWorld.height
@@ -36,6 +44,9 @@ function game:init()
     minY = 64,
     maxY = 64,
   }
+
+  self.heart = love.graphics.newImage('assets/player/hp.png')
+  self.heartEmpty = love.graphics.newImage('assets/player/hpEmpty.png')
 
   self.msg = nil
 
@@ -55,6 +66,8 @@ function game:init()
 
             if tileProp == entityIds.frog then
               table.insert(self.entities, frog.new(wx * 8, wy * 8, self.map))
+            elseif tileProp == entityIds.slime then
+              table.insert(self.entities, slime.new(wx * 8, wy * 8, self.player, self.map))
             end
 
             entityLayer:setTileAtGridPosition(wx, wy, 0)
@@ -77,10 +90,29 @@ function game:update(delta)
         x = math.floor(entity.x), y = math.floor(entity.y), w = entity.w, h = entity.h
       }
 
-      if mathf.colRect(self.player.interactionBounds, rect) then
-        self.msg = input.interact .. ' to fuse'
-        if input:isPressed(input.interact) then
-          self.player:fuse(entity.fuse)
+      if entity.hp == nil then
+        if mathf.colRect(self.player.interactionBounds, rect) then
+          self.msg = input.interact .. ' to fuse'
+          if input:isPressed(input.interact) then
+            self.player:fuse(entity.fuse)
+          end
+        end
+      else -- We are seeing an enemy
+        if mathf.colRect({
+          x = self.player.x, y = self.player.y, w = self.player.w, h = self.player.h
+        }, rect) then
+          if not self.player.iframesActive then
+            self.player.hp = self.player.hp - 1
+            if self.player.hp < 1 then
+              -- TODO: Handle death
+              os.exit(1)
+            end
+
+            mathf.applyKnockback(self.player, entity.x, entity.y, 160)
+
+            self.player.iframeTimer:start()
+            self.player.iframesActive = true
+          end
         end
       end
     end
@@ -125,6 +157,23 @@ function game:draw()
   end
 
   self.camera:detach()
+
+  -- UI (outside camera)
+  local hpOffset = 2
+  local hpOffsetRect = 1
+
+  love.graphics.setColor(globals.palette.brown)
+  love.graphics.rectangle('fill', hpOffsetRect, hpOffsetRect, 8 * self.player.maxHp + hpOffsetRect, 8 + hpOffsetRect)
+  love.graphics.setColor(1,1,1)
+
+  for i=0, self.player.maxHp - 1 do
+    if self.player.hp > i then
+      love.graphics.draw(self.heart, hpOffset + 8 * i, 2)
+    else
+      love.graphics.draw(self.heartEmpty, hpOffset + 8 * i, 2)
+    end
+  end
+
   globals.canvas:renderWorld()
 
   if globals.dialogue then

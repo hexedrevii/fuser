@@ -6,6 +6,9 @@
 ---@field flipH boolean
 ---@field w number
 ---@field h number
+---@field stopOnDone boolean
+---@field stopped boolean
+---@field onStopped function
 local anim = {}
 anim.__index = anim
 
@@ -22,7 +25,10 @@ function anim:new(img, w, h, duration)
     time = 0,
 
     flipH = false,
-    w = w, h = h
+    w = w, h = h,
+    stopOnDone = false,
+    stopped = false,
+    onStopped = nil
   }
 
   for y = 0, a.spriteSheet:getHeight() - h, h do
@@ -36,12 +42,24 @@ end
 
 function anim:reset()
   self.time = 0
+  if self.stopOnDone then
+    self.stopped = false
+  end
 end
 
 function anim:update(delta)
+  if self.stopped then return end
+
   self.time = self.time + delta
   if self.time >= self.duration then
     self.time = 0
+
+    if self.stopOnDone then
+      self.stopped = true
+      if self.onStopped then
+        self.onStopped(self)
+      end
+    end
   end
 end
 

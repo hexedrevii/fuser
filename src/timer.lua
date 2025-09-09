@@ -29,7 +29,7 @@ function timer:stop()
   self.__time = 0
 end
 
-function timer:resume()
+function timer:start()
   self.__stopped = false
 end
 

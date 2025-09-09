@@ -5,16 +5,18 @@ local playerFuse = require "src.fusions.playerFuse"
 local anim       = require "src.anim"
 local fuseData   = require "src.fusions.fuseData"
 local globals    = require "src.globals"
+local timer      = require "src.timer"
 
 ---@class player : mapped
 ---@field sprite anim
 ---@field private __getAxis function
 ---@field private __input function
+---@field game table
 local player = {}
 player.__index = player
 setmetatable(player, { __index = mapped })
 
-function player.new(map)
+function player.new(map, game)
   ---@class player
   local plr = mapped.new(7, 7, map)
 
@@ -22,6 +24,8 @@ function player.new(map)
   plr.acc = 700
 
   plr.jmp = 200
+
+  plr.game = game
 
   plr.gravity = 200
   plr.gravitational_pull = 800
@@ -36,6 +40,27 @@ function player.new(map)
 
   plr.inter = nil
   plr.hasSword = false
+  plr.inputLocked = false
+  plr.slasher = {
+    x = 0, y = 0,
+    sprite = anim:new(
+      love.graphics.newImage('assets/player/slash.png'),
+      8, 8, 0.25
+    )
+  }
+
+  plr.iframesActive = false
+  plr.iframeTimer = timer:new(0.5, function()
+    plr.iframesActive = false
+  end, true)
+
+  plr.slasher.sprite.stopOnDone = true
+  plr.slasher.sprite.onStopped = function()
+    plr.inputLocked = false
+  end
+
+  plr.maxHp = 3
+  plr.hp = 3
 
   if plr.map then
     plr:pushLayer(plr.map.layers.solids)
@@ -96,6 +121,8 @@ function player:__getAxis(negative, positive)
 end
 
 function player:__input(delta)
+  if self.inputLocked then return end
+
   local dir = self:__getAxis(input.left, input.right)
   self.vx = mathf.moveTowards(self.vx, dir * self.spd, self.acc * delta)
 
@@ -127,6 +154,11 @@ end
 
 function player:update(delta)
   if globals.dialogue then return end
+
+  if self.iframesActive then
+    self.iframeTimer:update(delta)
+  end
+
   self.interactionBounds.x = math.floor(self.x - 8)
   self.interactionBounds.y = math.floor(self.y - 8)
 
