@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="8" tileheight="8" infinite="1" nextlayerid="2" nextobjectid="1">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="8" tileheight="8" infinite="1" nextlayerid="3" nextobjectid="1">
  <editorsettings>
   <export target="../world.lua" format="lua"/>
  </editorsettings>
@@ -43,6 +43,14 @@
   <tile id="12">
    <properties>
     <property name="solid" type="bool" value="true"/>
+   </properties>
+  </tile>
+ </tileset>
+ <tileset firstgid="15" name="e" tilewidth="8" tileheight="8" tilecount="1" columns="1">
+  <image source="../e.png" width="8" height="8"/>
+  <tile id="0">
+   <properties>
+    <property name="entityId" value="frogger"/>
    </properties>
   </tile>
  </tileset>
@@ -151,10 +159,32 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-9,9,0,0,0,10,0,0,0,0,9,0,0,0,0,0,
-2,1,3,3,2,3,1,2,2,1,3,1,0,0,0,0,
-4,4,4,4,4,4,5,4,6,4,4,4,0,0,0,0,
-4,4,5,4,4,4,4,4,4,6,4,5,0,0,0,0
+9,9,0,0,0,10,0,0,0,0,9,0,2,3,0,0,
+2,1,3,3,2,3,1,2,2,1,3,1,4,4,0,0,
+4,4,4,4,4,4,5,4,6,4,4,4,4,4,0,0,
+4,4,5,4,4,4,4,4,4,6,4,5,4,4,0,0
+</chunk>
+  </data>
+ </layer>
+ <layer id="2" name="spawners" width="30" height="20">
+  <data encoding="csv">
+   <chunk x="48" y="0" width="16" height="16">
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,15,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </chunk>
   </data>
  </layer>

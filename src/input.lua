@@ -1,6 +1,8 @@
 local input = {
   left = "a", right = "d",
   jump = "space",
+  interact = 'e',
+  unfuse   = 'q',
 
   --! Internal! No touchies :3
   __pressed = {}

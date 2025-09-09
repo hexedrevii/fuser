@@ -3,6 +3,10 @@ local player       = require "src.entities.player"
 local cartographer = require "lib.cartographer"
 local hcamera      = require "lib.hump.camera"
 local mathf        = require "src.mathf"
+local rawWorld     = require "assets.maps.world"
+local entityIds    = require "src.entities.entityIds"
+local frog         = require "src.entities.frog"
+local input        = require "src.input"
 
 local game = {}
 
@@ -18,6 +22,9 @@ function game:init()
   self.player.x = 6 * 8
   self.player.y = 11 * 8
 
+  self.mapX = rawWorld.width
+  self.mapY = rawWorld.height
+
   table.insert(self.entities, self.player)
 
   self.camera = hcamera(0, 0)
@@ -30,11 +37,49 @@ function game:init()
     maxY = 64,
   }
 
+  -- Find entities
+  local entityLayer = self.map.layers.spawners
+  for _, chunk in ipairs(entityLayer.chunks) do
+    for cy = 0, chunk.height - 1 do
+      for cx = 0, chunk.width - 1 do
+        local idx = cy * chunk.width + cx + 1
+        local tileIdx = chunk.data[idx]
+
+        if tileIdx ~= 0 then
+          local tileProp = self.map:getTileProperty(tileIdx, 'entityId')
+          if tileProp then
+            local wx = chunk.x + cx
+            local wy = chunk.y + cy
+
+            if tileProp == entityIds.frog then
+              table.insert(self.entities, frog.new(wx * 8, wy * 8, self.map))
+            end
+
+            entityLayer:setTileAtGridPosition(wx, wy, 0)
+          end
+        end
+      end
+    end
+  end
 end
 
 function game:update(delta)
   for _, entity in ipairs(self.entities) do
     entity:update(delta)
+  end
+
+  for _,entity in ipairs(self.entities) do
+    if entity ~= self.player then
+      local rect = {
+        x = math.floor(entity.x), y = math.floor(entity.y), w = entity.w, h = entity.h
+      }
+
+      if mathf.colRect(self.player.interactionBounds, rect) then
+        if input:isPressed(input.interact) then
+          self.player:fuse(entity.fuse)
+        end
+      end
+    end
   end
 
   local targetX = math.floor(self.player.x)

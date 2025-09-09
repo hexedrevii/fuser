@@ -3,6 +3,10 @@ local game  = require "src.world.game"
 local input = require "src.input"
 
 function love.load()
+  -- Better randomness
+  math.randomseed(os.time())
+
+  -- Pixel art game
   love.graphics.setDefaultFilter('nearest', 'nearest')
 
   world:set(game)

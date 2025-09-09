@@ -4,7 +4,6 @@ local mathf  = require "src.mathf"
 local playerFuse = require "src.fusions.playerFuse"
 local anim       = require "src.anim"
 local fuseData   = require "src.fusions.fuseData"
-local frogFuse   = require "src.fusions.frogFuse"
 
 ---@class player : mapped
 ---@field sprite anim
@@ -30,6 +29,9 @@ function player.new(map)
   plr.activeFusion = playerFuse:set(plr)
   plr.sprite = anim:new(love.graphics.newImage(fuseData[plr.activeFusion.id].spritePath), 8, 8, 1)
 
+  plr.interactionBounds = {
+    x = plr.x - 8, y = plr.y - 8, w = 24, h = 24
+  }
 
   if plr.map then
     plr:pushLayer(plr.map.layers.solids)
@@ -66,6 +68,9 @@ function player:fuse(fusion)
 end
 
 function player:update(delta)
+  self.interactionBounds.x = math.floor(self.x - 8)
+  self.interactionBounds.y = math.floor(self.y - 8)
+
   self:__input(delta)
   if not self:isOnFloor() then
     self.vy = mathf.moveTowards(self.vy, self.gravity, self.gravitational_pull * delta)
@@ -75,8 +80,7 @@ function player:update(delta)
     end
   end
 
-
-  if input:isPressed('q') then
+  if input:isPressed(input.unfuse) then
     if self.activeFusion ~= playerFuse then
       self:fuse(playerFuse)
     end
