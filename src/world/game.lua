@@ -8,6 +8,7 @@ local entityIds    = require "src.entities.entityIds"
 local frog         = require "src.entities.frog"
 local input        = require "src.input"
 local slime        = require "src.entities.slime"
+local playerFuse   = require "src.fusions.playerFuse"
 
 local game = {}
 
@@ -18,6 +19,64 @@ end
 function game:__debug_setPlayerPosition(x, y)
   self.player.x = x * 8
   self.player.y = y * 8
+
+  self.player.hasSword = true
+end
+
+function game:__handleDeath()
+  local newEntities = {self.player }
+  self.entities = newEntities
+
+  for _, location in ipairs(self.entityLocations) do
+    self:__spawnEntityAt(location.x, location.y, location.id)
+  end
+
+  self.player.hp = self.player.maxHp
+  self.player:fuse(playerFuse)
+
+  self.player.vx = 0
+  self.player.vy = 0
+
+  self.player.x = self.player.checkpoint.x * 8
+  self.player.y = self.player.checkpoint.y * 8
+
+  self.player.iframesActive = false
+  if self.player.iframeTimer then
+    self.player.iframeTimer:stop()
+  end
+end
+
+function game:__spawnEntityAt(wx, wy, id)
+  if id == entityIds.frog then
+    table.insert(self.entities, frog.new(wx * 8, wy * 8, self.map))
+  elseif id == entityIds.slime then
+    table.insert(self.entities, slime.new(wx * 8, wy * 8, self.player, self.map))
+  end
+end
+
+function game:__spawnEntites()
+  local entityLayer = self.map.layers.spawners
+  for _, chunk in ipairs(entityLayer.chunks) do
+    for cy = 0, chunk.height - 1 do
+      for cx = 0, chunk.width - 1 do
+        local idx = cy * chunk.width + cx + 1
+        local tileIdx = chunk.data[idx]
+
+        if tileIdx ~= 0 then
+          local tileProp = self.map:getTileProperty(tileIdx, 'entityId')
+          if tileProp then
+            local wx = chunk.x + cx
+            local wy = chunk.y + cy
+
+            self:__spawnEntityAt(wx, wy, tileProp)
+            table.insert(self.entityLocations, {x = wx, y = wy, id = tileProp})
+
+            entityLayer:setTileAtGridPosition(wx, wy, 0)
+          end
+        end
+      end
+    end
+  end
 end
 
 function game:init()
@@ -28,7 +87,7 @@ function game:init()
   self.player.x = 6 * 8
   self.player.y = 11 * 8
 
-  self:__debug_setPlayerPosition(51, 12)
+  -- self:__debug_setPlayerPosition(157, 10)
 
   self.mapX = rawWorld.width
   self.mapY = rawWorld.height
@@ -50,32 +109,9 @@ function game:init()
 
   self.msg = nil
 
-  -- Find entities
-  local entityLayer = self.map.layers.spawners
-  for _, chunk in ipairs(entityLayer.chunks) do
-    for cy = 0, chunk.height - 1 do
-      for cx = 0, chunk.width - 1 do
-        local idx = cy * chunk.width + cx + 1
-        local tileIdx = chunk.data[idx]
+  self.entityLocations = {}
 
-        if tileIdx ~= 0 then
-          local tileProp = self.map:getTileProperty(tileIdx, 'entityId')
-          if tileProp then
-            local wx = chunk.x + cx
-            local wy = chunk.y + cy
-
-            if tileProp == entityIds.frog then
-              table.insert(self.entities, frog.new(wx * 8, wy * 8, self.map))
-            elseif tileProp == entityIds.slime then
-              table.insert(self.entities, slime.new(wx * 8, wy * 8, self.player, self.map))
-            end
-
-            entityLayer:setTileAtGridPosition(wx, wy, 0)
-          end
-        end
-      end
-    end
-  end
+  self:__spawnEntites()
 end
 
 function game:update(delta)
@@ -103,21 +139,27 @@ function game:update(delta)
         }, rect) then
           if not self.player.iframesActive then
             self.player.hp = self.player.hp - 1
-            if self.player.hp < 1 then
-              -- TODO: Handle death
-              os.exit(1)
-            end
 
             mathf.applyKnockback(self.player, entity.x, entity.y, 160)
 
             self.player.iframeTimer:start()
             self.player.iframesActive = true
+
+            if self.player.hp < 1 then
+              self:__handleDeath()
+            end
           end
         end
       end
     end
   end
 
+  -- Player fall off map check like Mario LOL
+  if self.player.y > 136 then
+    self:__handleDeath()
+  end
+
+  -- Camera movement
   local targetX = math.floor(self.player.x)
   local targetY = math.floor(self.player.y)
 

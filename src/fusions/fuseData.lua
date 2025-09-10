@@ -1,7 +1,7 @@
 local fuseData = {
   ['player'] = {
     spritePath = 'assets/player/player.png',
-    spd = 1
+    spd = 0.25
   },
 
   ['frog'] = {

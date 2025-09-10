@@ -10,6 +10,8 @@ local globals = {
     body = love.graphics.newCanvas(128, 128)
   },
 
+  bulletSprite = love.graphics.newImage('assets/entities/bullet.png'),
+
   ---@class palette
   ---@field orange number[]
   ---@field lightYellow number[]

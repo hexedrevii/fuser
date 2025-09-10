@@ -20,7 +20,7 @@ function player.new(map, game)
   ---@class player
   local plr = mapped.new(7, 7, map)
 
-  plr.spd = 128
+  plr.spd = 105
   plr.acc = 700
 
   plr.jmp = 200
@@ -38,6 +38,10 @@ function player.new(map, game)
     x = plr.x - 8, y = plr.y - 8, w = 24, h = 24
   }
 
+  plr.checkpoint = {
+    x = 6, y = 11
+  }
+
   plr.inter = nil
   plr.hasSword = false
   plr.inputLocked = false
@@ -48,6 +52,9 @@ function player.new(map, game)
       8, 8, 0.25
     )
   }
+
+  plr.bullets = {}
+  plr.facing = 'left'
 
   plr.iframesActive = false
   plr.iframeTimer = timer:new(0.5, function()
@@ -169,6 +176,14 @@ function player:update(delta)
     if input:isPressed(input.jump) then
       self.vy = -self.jmp
     end
+  end
+
+  -- Find a new checkpoint!!!!!
+  local cx = self:__getProperty(math.floor(self.x / 8), math.floor(self.y / 8), self.map.layers.checkpoints, 'px')
+  local cy = self:__getProperty(math.floor(self.x / 8), math.floor(self.y / 8), self.map.layers.checkpoints, 'py')
+  if cx and cy then
+    self.checkpoint.x = cx
+    self.checkpoint.y = cy
   end
 
   if input:isPressed(input.unfuse) then
