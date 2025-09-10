@@ -48,7 +48,7 @@ function mainMenu:draw()
   love.graphics.setFont(globals.font)
   love.graphics.setColor(1,1,1)
 
-  love.graphics.setColor({globals.palette.lighYellow[1], globals.palette.lighYellow[2], globals.palette.lighYellow[3], 0.3})
+  love.graphics.setColor(globals.palette.lighYellow[1], globals.palette.lighYellow[2], globals.palette.lighYellow[3], 0.3)
   love.graphics.print('navigate: w/s accept: space', 1, 120)
   love.graphics.setColor(1,1,1)
 

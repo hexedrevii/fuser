@@ -2,6 +2,21 @@
 -- Second is X
 -- This is the position the button is found at.
 local buttonData = {
+  [0] = {
+    [377] = function(map)
+      local layer = map.layers.solids
+      layer:setTileAtGridPosition(377, 0, 17)
+
+      layer:setTileAtGridPosition(396, 3, 0)
+      layer:setTileAtGridPosition(397, 3, 0)
+      layer:setTileAtGridPosition(398, 3, 0)
+
+      layer:setTileAtGridPosition(396, 13, 15)
+      layer:setTileAtGridPosition(397, 13, 15)
+      layer:setTileAtGridPosition(398, 13, 15)
+    end
+  },
+
   [4] = {
     [332] = function(map)
       local layer = map.layers.solids
@@ -33,6 +48,14 @@ local buttonData = {
       layer:setTileAtGridPosition(155, 8, 0)
       layer:setTileAtGridPosition(155, 9, 0)
       layer:setTileAtGridPosition(155, 10, 0)
+    end,
+
+    [389] = function(map)
+      local layer = map.layers.solids
+      layer:setTileAtGridPosition(389, 9, 20)
+
+      layer:setTileAtGridPosition(383, 10, 15)
+      layer:setTileAtGridPosition(384, 10, 15)
     end
   },
 

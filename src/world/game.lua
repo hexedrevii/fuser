@@ -97,7 +97,7 @@ function game:init()
 
   self.state = __gameStates.unpaused
 
-  --self:__debug_setPlayerPosition(314, 11)
+  self:__debug_setPlayerPosition(344, 9)
 
   self.mapX = rawWorld.width
   self.mapY = rawWorld.height

@@ -7,7 +7,6 @@ local globals = require 'src.globals'
 local mainMenu= require 'src.world.mainMenu'
 local introControl = require 'src.introControl'
 
-
 function love.load()
   -- Better randomness
   math.randomseed(os.time())
@@ -22,8 +21,8 @@ function love.load()
   manager:register(flow)
   manager:register(introControl)
 
-  -- world:set(game)
-  world:set(mainMenu)
+  world:set(game)
+  --world:set(mainMenu)
 end
 
 function love.update(delta)
