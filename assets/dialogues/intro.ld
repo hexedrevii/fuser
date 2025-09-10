@@ -1,0 +1,6 @@
+Brandon: ...
+Brandon: My little sister dissapeared into the forest.
+Brandon: We don't know where she went or how she got there.
+Brandon: But I {wave:1}have{/wave} to go find her.
+Brandon: ...
+Brandon: Let's do this. (end)

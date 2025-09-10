@@ -89,13 +89,15 @@ function game:init()
   self.entities = {}
 
   self.map = cartographer.load('assets/maps/world.lua')
+  self.mapBackground = cartographer.load('assets/maps/background.lua')
+
   self.player = player.new(self.map, self)
   self.player.x = 6 * 8
   self.player.y = 11 * 8
 
   self.state = __gameStates.unpaused
 
-  self:__debug_setPlayerPosition(314, 11)
+  --self:__debug_setPlayerPosition(314, 11)
 
   self.mapX = rawWorld.width
   self.mapY = rawWorld.height
@@ -216,9 +218,8 @@ function game:draw()
 
   globals.canvas:set()
   if self.state == __gameStates.unpaused then
-    self.camera:attach(0, 0, globals.canvas.x, globals.canvas.y)
-
     love.graphics.clear(globals.palette.lightGreen)
+    self.camera:attach(0, 0, globals.canvas.x, globals.canvas.y)
 
     self.map:draw()
 

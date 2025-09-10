@@ -27,6 +27,7 @@ local globals = {
   },
 
   font = love.graphics.newFont('assets/pico-8.otf', 6),
+  fontHuge = love.graphics.newFont('assets/pico-8.otf', 12),
 
   ---@class dialogue
   ---@field update function
@@ -59,6 +60,33 @@ local globals = {
     -- NO FADES IT LOOKS UGLY
     fadeInDuration = 0,
     fadeOutDuration = 0,
+  },
+
+  introPlayed = false,
+  dialogueIntroConfig = {
+    boxHeight = 150,
+    boxColor  = {0.93,0.61,0.36, 1},
+    textColor = {0.99,1.00,0.75, 1},
+    typingSpeed = 0.05,
+    padding = 20,
+    autoLayoutEnabled = true,
+    skipKey = "f",
+    textSpeeds = {
+      slow = 0.08,
+      normal = 0.05,
+      fast = 0.02
+    },
+
+    letterSpacingLatin = 2,
+
+    initialSpeedSetting = "normal",
+    autoAdvance = false,
+    autoAdvanceDelay = 3.0,
+
+    plugins = {"FlowControl", "IntroControl"},
+
+    fadeInDuration = 0.5,
+    fadeOutDuration = 0.5,
   }
 }
 

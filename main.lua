@@ -4,6 +4,8 @@ local input   = require "src.input"
 local flow    = require 'src.flowControl'
 local manager = require 'lib.LoveDialogue.PluginManager'
 local globals = require 'src.globals'
+local mainMenu= require 'src.world.mainMenu'
+local introControl = require 'src.introControl'
 
 
 function love.load()
@@ -16,10 +18,12 @@ function love.load()
   -- Set font for drawing
   love.graphics.setNewFont('assets/pico-8.otf', 6)
 
-  -- Set flowControl plugin for dialogue
+  -- Set plugins for dialogue
   manager:register(flow)
+  manager:register(introControl)
 
-  world:set(game)
+  -- world:set(game)
+  world:set(mainMenu)
 end
 
 function love.update(delta)

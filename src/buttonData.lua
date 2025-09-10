@@ -5,7 +5,7 @@ local buttonData = {
   [4] = {
     [332] = function(map)
       local layer = map.layers.solids
-      layer:setTileAtGridPosition(86, 5, 20)
+      layer:setTileAtGridPosition(332, 4, 20)
 
       layer:setTileAtGridPosition(336, 7, 0)
       layer:setTileAtGridPosition(336, 8, 0)
