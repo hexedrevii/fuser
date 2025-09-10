@@ -9,8 +9,14 @@ local frog         = require "src.entities.frog"
 local input        = require "src.input"
 local slime        = require "src.entities.slime"
 local playerFuse   = require "src.fusions.playerFuse"
+local buttonController = require "src.ui.buttonController"
 
 local game = {}
+
+local __gameStates = {
+  paused = 'inpauseWAWAKUWAuwuharder',
+  unpaused = 'notpauseLMAO!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
+}
 
 local function __lerp(x, y, t)
   return x + (y - x) * t
@@ -87,7 +93,9 @@ function game:init()
   self.player.x = 6 * 8
   self.player.y = 11 * 8
 
-  -- self:__debug_setPlayerPosition(157, 10)
+  self.state = __gameStates.unpaused
+
+  self:__debug_setPlayerPosition(314, 11)
 
   self.mapX = rawWorld.width
   self.mapY = rawWorld.height
@@ -104,6 +112,19 @@ function game:init()
     maxY = 64,
   }
 
+  self.pauseButtons = buttonController:new()
+  self.pauseButtons:pushNewButton(50, 50, 'unpause', function()
+    self.state = __gameStates.unpaused
+  end)
+
+  self.pauseButtons:pushNewButton(54, 60, 'reset', function()
+    self.state = __gameStates.unpaused
+    self:__handleDeath()
+  end)
+
+  self.pauseButtons:pushNewButton(46, 70, 'main menu', function()
+  end)
+
   self.heart = love.graphics.newImage('assets/player/hp.png')
   self.heartEmpty = love.graphics.newImage('assets/player/hpEmpty.png')
 
@@ -115,64 +136,76 @@ function game:init()
 end
 
 function game:update(delta)
-  for _, entity in ipairs(self.entities) do
-    entity:update(delta)
-  end
+  if self.state == __gameStates.unpaused then
+    if input:isPressed('escape') then
+      self.state = __gameStates.paused
+    end
 
-  self.msg = nil
-  for _,entity in ipairs(self.entities) do
-    if entity ~= self.player then
-      local rect = {
-        x = math.floor(entity.x), y = math.floor(entity.y), w = entity.w, h = entity.h
-      }
+    for _, entity in ipairs(self.entities) do
+      entity:update(delta)
+    end
 
-      if entity.hp == nil then -- We are seeing an innocent animal.
-        if mathf.colRect(self.player.interactionBounds, rect) then
-          self.msg = input.interact .. ' to fuse'
-          if input:isPressed(input.interact) then
-            self.player:fuse(entity.fuse)
+    self.msg = nil
+    for _,entity in ipairs(self.entities) do
+      if entity ~= self.player then
+        local rect = {
+          x = math.floor(entity.x), y = math.floor(entity.y), w = entity.w, h = entity.h
+        }
+
+        if entity.hp == nil then -- We are seeing an innocent animal.
+          if mathf.colRect(self.player.interactionBounds, rect) then
+            self.msg = input.interact .. ' to fuse'
+            if input:isPressed(input.interact) then
+              self.player:fuse(entity.fuse)
+            end
           end
-        end
-      else -- We are seeing an enemy
-        if mathf.colRect({
-          x = self.player.x, y = self.player.y, w = self.player.w, h = self.player.h
-        }, rect) then
-          if not self.player.iframesActive then
-            self.player.hp = self.player.hp - 1
+        else -- We are seeing an enemy
+          if mathf.colRect({
+            x = self.player.x, y = self.player.y, w = self.player.w, h = self.player.h
+          }, rect) then
+            if not self.player.iframesActive then
+              self.player.hp = self.player.hp - 1
 
-            mathf.applyKnockback(self.player, entity.x, entity.y, 160)
+              mathf.applyKnockback(self.player, entity.x, entity.y, 160)
 
-            self.player.iframeTimer:start()
-            self.player.iframesActive = true
+              self.player.iframeTimer:start()
+              self.player.iframesActive = true
 
-            if self.player.hp < 1 then
-              self:__handleDeath()
+              if self.player.hp < 1 then
+                self:__handleDeath()
+              end
             end
           end
         end
       end
     end
-  end
 
-  -- Player fall off map check like Mario LOL
-  if self.player.y > 136 then
-    self:__handleDeath()
-  end
+    -- Player fall off map check like Mario LOL
+    if self.player.y > 136 then
+      self:__handleDeath()
+    end
 
-  -- Camera movement
-  local targetX = math.floor(self.player.x)
-  local targetY = math.floor(self.player.y)
+    -- Camera movement
+    local targetX = math.floor(self.player.x)
+    local targetY = math.floor(self.player.y)
 
-  targetX = math.max(self.cameraBounds.minX, math.min(targetX, self.cameraBounds.maxX))
-  targetY = math.max(self.cameraBounds.minY, math.min(targetY, self.cameraBounds.maxY))
+    targetX = math.max(self.cameraBounds.minX, math.min(targetX, self.cameraBounds.maxX))
+    targetY = math.max(self.cameraBounds.minY, math.min(targetY, self.cameraBounds.maxY))
 
-  local camX = __lerp(self.camera.x, targetX, delta * self.cameraSmoothness)
-  local camY = __lerp(self.camera.y, targetY, delta * self.cameraSmoothness)
+    local camX = __lerp(self.camera.x, targetX, delta * self.cameraSmoothness)
+    local camY = __lerp(self.camera.y, targetY, delta * self.cameraSmoothness)
 
-  self.camera:lookAt(camX, camY)
+    self.camera:lookAt(camX, camY)
 
-  if globals.dialogue then
-    globals.dialogue:update(delta)
+    if globals.dialogue then
+      globals.dialogue:update(delta)
+    end
+  elseif self.state == __gameStates.paused then
+    if input:isPressed('escape') then
+      self.state = __gameStates.unpaused
+    end
+
+    self.pauseButtons:update(delta)
   end
 end
 
@@ -182,38 +215,50 @@ function game:draw()
   love.graphics.clear(0, 0, 0)
 
   globals.canvas:set()
-  self.camera:attach(0, 0, globals.canvas.x, globals.canvas.y)
+  if self.state == __gameStates.unpaused then
+    self.camera:attach(0, 0, globals.canvas.x, globals.canvas.y)
 
-  love.graphics.clear(globals.palette.lightGreen)
+    love.graphics.clear(globals.palette.lightGreen)
 
-  self.map:draw()
+    self.map:draw()
 
-  for _, entity in ipairs(self.entities) do
-    entity:draw()
-  end
-
-  if self.msg then
-    love.graphics.setColor(globals.palette.lighYellow)
-    love.graphics.print(self.msg, math.floor(self.player.x - 15), math.floor(self.player.y + 10))
-    love.graphics.setColor(1,1,1)
-  end
-
-  self.camera:detach()
-
-  -- UI (outside camera)
-  local hpOffset = 2
-  local hpOffsetRect = 1
-
-  love.graphics.setColor(globals.palette.brown)
-  love.graphics.rectangle('fill', hpOffsetRect, hpOffsetRect, 8 * self.player.maxHp + hpOffsetRect, 8 + hpOffsetRect)
-  love.graphics.setColor(1,1,1)
-
-  for i=0, self.player.maxHp - 1 do
-    if self.player.hp > i then
-      love.graphics.draw(self.heart, hpOffset + 8 * i, 2)
-    else
-      love.graphics.draw(self.heartEmpty, hpOffset + 8 * i, 2)
+    for _, entity in ipairs(self.entities) do
+      entity:draw()
     end
+
+    if self.msg then
+      love.graphics.setColor(globals.palette.lighYellow)
+      love.graphics.print(self.msg, math.floor(self.player.x - 15), math.floor(self.player.y + 10))
+      love.graphics.setColor(1,1,1)
+    end
+
+    self.camera:detach()
+
+    -- UI (outside camera)
+    local hpOffset = 2
+    local hpOffsetRect = 1
+
+    love.graphics.setColor(globals.palette.brown)
+    love.graphics.rectangle('fill', hpOffsetRect, hpOffsetRect, 8 * self.player.maxHp + hpOffsetRect, 8 + hpOffsetRect)
+    love.graphics.setColor(1,1,1)
+
+    for i=0, self.player.maxHp - 1 do
+      if self.player.hp > i then
+        love.graphics.draw(self.heart, hpOffset + 8 * i, 2)
+      else
+        love.graphics.draw(self.heartEmpty, hpOffset + 8 * i, 2)
+      end
+    end
+  elseif self.state == __gameStates.paused then
+    love.graphics.setColor(globals.palette.darkPurple)
+    love.graphics.rectangle('fill', 0, 0, globals.canvas.x, globals.canvas.y)
+    love.graphics.setColor(1,1,1)
+
+    love.graphics.setColor(globals.palette.lighYellow)
+    love.graphics.print('paused!', 52, 10)
+    love.graphics.setColor(1,1,1)
+
+    self.pauseButtons:draw()
   end
 
   globals.canvas:renderWorld()

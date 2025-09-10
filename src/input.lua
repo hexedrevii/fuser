@@ -5,6 +5,9 @@ local input = {
   unfuse   = 'q',
   slash    = 'f',
 
+  up = 'w',
+  down = 's',
+
   --! Internal! No touchies :3
   __pressed = {}
 }

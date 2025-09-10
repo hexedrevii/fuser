@@ -29,6 +29,7 @@ function slimeFuse:update(delta)
       local gx = math.floor((b.x + 4) / 8)
       local gy = math.floor((b.y + 4) / 8)
 
+      print(gx, gy)
       if buttonData[gy] and buttonData[gy][gx] then
         buttonData[gy][gx](self.player.map)
       end

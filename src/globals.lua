@@ -17,11 +17,13 @@ local globals = {
   ---@field lightYellow number[]
   ---@field lightGreen number[]
   ---@field brown number[]
+  ---@field darkPurple number[]
   palette = {
     orange = {0.93,0.61,0.36},
     lighYellow = {0.99,1.00,0.75},
     lightGreen = {0.43,0.72,0.66},
-    brown = {0.47,0.27,0.28}
+    brown = {0.47,0.27,0.28},
+    darkPurple = {0.18,0.08,0.18}
   },
 
   font = love.graphics.newFont('assets/pico-8.otf', 6),
