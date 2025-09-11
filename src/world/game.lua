@@ -10,6 +10,8 @@ local input        = require "src.input"
 local slime        = require "src.entities.slime"
 local playerFuse   = require "src.fusions.playerFuse"
 local buttonController = require "src.ui.buttonController"
+local world            = require "src.world.world"
+local final            = require "src.world.final"
 
 local game = {}
 
@@ -51,6 +53,8 @@ function game:__handleDeath()
   if self.player.iframeTimer then
     self.player.iframeTimer:stop()
   end
+
+  self.player.deaths = self.player.deaths + 1
 end
 
 function game:__spawnEntityAt(wx, wy, id)
@@ -98,7 +102,7 @@ function game:init()
 
   self.state = __gameStates.unpaused
 
-  -- self:__debug_setPlayerPosition(406, 12)
+  --self:__debug_setPlayerPosition(610, 14)
 
   self.mapX = rawWorld.width
   self.mapY = rawWorld.height
@@ -109,7 +113,7 @@ function game:init()
   self.cameraSmoothness = 10
   self.cameraBounds = {
     minX = 64,
-    maxX = 9999,
+    maxX = 5184,
 
     minY = 64,
     maxY = 64,
@@ -126,6 +130,9 @@ function game:init()
   end)
 
   self.pauseButtons:pushNewButton(46, 70, 'main menu', function()
+    -- LAZY LOADING AJWDJAHSFHJUFHJKADLJKHADFLJKHAFJKHLDFHLJKDFHALJ
+    local mainMenu = require "src.world.mainMenu"
+    world:set(mainMenu)
   end)
 
   self.heart = love.graphics.newImage('assets/player/hp.png')
@@ -135,12 +142,17 @@ function game:init()
 
   self.entityLocations = {}
 
+  self.endingBox = {
+    alpha = 0,
+    fadeSpeed = 1,
+  }
+
   self:__spawnEntites()
 end
 
 function game:update(delta)
   if self.state == __gameStates.unpaused then
-    if input:isPressed('escape') then
+    if input:isPressed('escape') and not globals.dialogue and not globals.gameEnded then
       self.state = __gameStates.paused
     end
 
@@ -193,15 +205,10 @@ function game:update(delta)
 
     -- Camera movement
     local targetX = math.floor(self.player.x)
-    local targetY = math.floor(self.player.y)
-
     targetX = math.max(self.cameraBounds.minX, math.min(targetX, self.cameraBounds.maxX))
-    targetY = math.max(self.cameraBounds.minY, math.min(targetY, self.cameraBounds.maxY))
-
     local camX = __lerp(self.camera.x, targetX, delta * self.cameraSmoothness)
-    local camY = __lerp(self.camera.y, targetY, delta * self.cameraSmoothness)
 
-    self.camera:lookAt(camX, camY)
+    self.camera:lookAt(math.floor(camX + 0.5), self.cameraBounds.maxY)
 
     if globals.dialogue then
       globals.dialogue:update(delta)
@@ -212,6 +219,19 @@ function game:update(delta)
     end
 
     self.pauseButtons:update(delta)
+  end
+
+  if globals.gameEnded then
+    if self.endingBox.alpha <= 1 then
+      self.endingBox.alpha = self.endingBox.alpha + self.endingBox.fadeSpeed * delta
+    end
+
+    if self.endingBox.alpha >= 1 then
+      love.graphics.reset()
+      final:setData(self.player.deaths, self.player.startTime, self.player.endTime)
+
+      world:set(final)
+    end
   end
 end
 
@@ -264,6 +284,12 @@ function game:draw()
     love.graphics.setColor(1,1,1)
 
     self.pauseButtons:draw()
+  end
+
+  if globals.gameEnded then
+    love.graphics.setColor(0,0,0, self.endingBox.alpha)
+    love.graphics.rectangle('fill', 0, 0, 128, 128)
+    love.graphics.setColor(1,1,1)
   end
 
   globals.canvas:renderWorld()

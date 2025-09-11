@@ -6,6 +6,8 @@ local manager = require 'lib.LoveDialogue.PluginManager'
 local globals = require 'src.globals'
 local mainMenu= require 'src.world.mainMenu'
 local introControl = require 'src.introControl'
+local endingControl= require 'src.endingControl'
+local splash       = require 'src.world.splash'
 
 function love.load()
   -- Better randomness
@@ -20,9 +22,14 @@ function love.load()
   -- Set plugins for dialogue
   manager:register(flow)
   manager:register(introControl)
+  manager:register(endingControl)
 
-  world:set(game)
-  --world:set(mainMenu)
+  splash:set({x = 128, y = 128}, globals.font, function()
+    world:set(mainMenu)
+  end)
+
+  world:set(splash)
+  --world:set(game)
 end
 
 function love.update(delta)

@@ -6,6 +6,7 @@ local anim       = require "src.anim"
 local fuseData   = require "src.fusions.fuseData"
 local globals    = require "src.globals"
 local timer      = require "src.timer"
+local LoveDialogue = require "lib.LoveDialogue.LoveDialogue"
 
 ---@class player : mapped
 ---@field sprite anim
@@ -41,6 +42,12 @@ function player.new(map, game)
   plr.checkpoint = {
     x = 6, y = 11
   }
+
+  plr.deaths = 0
+  plr.startTime = os.time()
+  plr.endTime = nil
+
+  print(os.date('%T', plr.startTime))
 
   plr.inter = nil
   plr.hasSword = false
@@ -168,7 +175,18 @@ function player:fuse(fusion, playsound)
 end
 
 function player:update(delta)
-  if globals.dialogue then return end
+  if globals.gameEnded then return end
+
+  if globals.dialogue then
+    if not self:isOnFloor() then
+      self.vy = mathf.moveTowards(self.vy, self.gravity, self.gravitational_pull * delta)
+    end
+
+    self.vx = 0
+    self:moveAndSlide(delta)
+
+    return
+  end
 
   if self.iframesActive then
     self.iframeTimer:update(delta)
@@ -193,6 +211,19 @@ function player:update(delta)
   if cx and cy then
     self.checkpoint.x = cx
     self.checkpoint.y = cy
+  end
+
+  -- Check for ENDINGJFKLJDFSLK:FDS
+  -- Only after reaching the last checkpoint
+  if self.checkpoint.x == 610 and self.checkpoint.y == 14 and not globals.inEnding then
+    local ending = self:__getProperty(math.floor(self.x / 8), math.floor(self.y / 8), self.map.layers.checkpoints, 'ending')
+    if ending then
+      self.endTime = os.time()
+      print(os.date('%T', self.endTime))
+
+      globals.dialogue = LoveDialogue.play(ending, globals.endingDialogue)
+      globals.inEnding = true
+    end
   end
 
   if input:isPressed(input.unfuse) then

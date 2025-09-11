@@ -61,40 +61,38 @@ function mapped:isOnFloor()
 end
 
 function mapped:moveAndSlide(dt)
-  local l = false
-  local r = false
+  local steps = math.ceil(math.max(math.abs(self.vx * dt), math.abs(self.vy * dt)) / 4)
+  local stepX = (self.vx * dt) / steps
+  local stepY = (self.vy * dt) / steps
 
-  for _, layer in ipairs(self.layers) do
-    if self:isSolidRect(self.x + self.vx * dt, self.y, layer) then
-      l = true
+  for _ = 1, steps do
+    -- Horizontal
+    local blockedX = false
+    for _, layer in ipairs(self.layers) do
+      if self:isSolidRect(self.x + stepX, self.y, layer) then
+        blockedX = true
+        break
+      end
     end
-    if self:isSolidRect(self.x, self.y + self.vy * dt, layer) then
-      r = true
-    end
-  end
 
-  -- Left and Right
-  if not l then
-    self.x = self.x + self.vx * dt
-  else
-    if self.vx * dt < 0 then
-      self.x  = (math.floor(self.x / 8)) * 8
-      self.vx = 0
-    elseif self.vx * dt > 0 then
-      self.x  = (math.floor((self.x + self.w) / 8)) * 8
+    if not blockedX then
+      self.x = self.x + stepX
+    else
       self.vx = 0
     end
-  end
 
-  -- Up and Down
-  if not r then
-    self.y = self.y + self.vy * dt
-  else
-    if self.vy < 0 then
-      self.y = (math.floor(self.y / 8)) * 8
-      self.vy = 0
-    elseif self.vy > 0 then
-      self.y = (math.floor((self.y + self.h) / 8)) * 8
+    -- Vertical
+    local blockedY = false
+    for _, layer in ipairs(self.layers) do
+      if self:isSolidRect(self.x, self.y + stepY, layer) then
+        blockedY = true
+        break
+      end
+    end
+
+    if not blockedY then
+      self.y = self.y + stepY
+    else
       self.vy = 0
     end
   end

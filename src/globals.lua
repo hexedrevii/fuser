@@ -98,7 +98,36 @@ local globals = {
 
     fadeInDuration = 0.5,
     fadeOutDuration = 0.5,
-  }
+  },
+
+  inEnding = false,
+  gameEnded = false,
+  endingDialogue = {
+    boxHeight = 150,
+    boxColor  = {0.93,0.61,0.36, 1},
+    textColor = {0.99,1.00,0.75, 1},
+    typingSpeed = 0.05,
+    padding = 20,
+    autoLayoutEnabled = true,
+    skipKey = "f",
+    textSpeeds = {
+      slow = 0.08,
+      normal = 0.05,
+      fast = 0.02
+    },
+
+    letterSpacingLatin = 2,
+
+    initialSpeedSetting = "normal",
+    autoAdvance = false,
+    autoAdvanceDelay = 3.0,
+
+    plugins = {"FlowControl", "EndingControl"},
+
+    -- NO FADES IT LOOKS UGLY
+    fadeInDuration = 0,
+    fadeOutDuration = 0,
+  },
 }
 
 globals.canvas.body:setFilter("nearest", "nearest")

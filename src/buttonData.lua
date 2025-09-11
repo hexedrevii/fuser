@@ -56,6 +56,22 @@ local buttonData = {
       layer:setTileAtGridPosition(97, 4, 0)
       layer:setTileAtGridPosition(97, 5, 0)
       layer:setTileAtGridPosition(97, 6, 0)
+    end,
+
+    [598] = function(map)
+      globals.sounds.click:play()
+
+      local layer = map.layers.solids
+      layer:setTileAtGridPosition(598, 5, 17)
+
+      layer:setTileAtGridPosition(599, 13, 15)
+      layer:setTileAtGridPosition(600, 13, 15)
+      layer:setTileAtGridPosition(601, 13, 15)
+
+      layer:setTileAtGridPosition(608, 11, 0)
+      layer:setTileAtGridPosition(608, 12, 0)
+      layer:setTileAtGridPosition(608, 13, 0)
+      layer:setTileAtGridPosition(608, 14, 0)
     end
   },
 
