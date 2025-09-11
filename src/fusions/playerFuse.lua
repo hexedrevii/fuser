@@ -1,6 +1,7 @@
 local fusion = require "src.fusions.fusion"
 local input  = require "src.input"
 local mathf  = require "src.mathf"
+local globals= require "src.globals"
 
 local playerFuse = fusion:new(128, 700, 200, 200, 800, 'player')
 
@@ -18,6 +19,8 @@ function playerFuse:update(delta)
       slasher.sprite:update(delta)
     else
       if input:isPressed(input.slash) then
+        mathf.playRandomPitch(globals.sounds.swing)
+
         slasher.sprite:reset()
         self.player.inputLocked = true
 
@@ -30,6 +33,8 @@ function playerFuse:update(delta)
                 mathf.applyKnockback(entity, self.player.x, self.player.y, 100)
 
                 if entity.hp < 1 then
+                  globals.sounds.death:play()
+
                   self.player:fuse(entity.fuse)
                   self.player.inputLocked = false
 

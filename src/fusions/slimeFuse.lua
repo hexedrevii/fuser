@@ -2,11 +2,15 @@ local fusion = require "src.fusions.fusion"
 local input  = require "src.input"
 local bullet = require "src.entities.bullet"
 local buttonData = require "src.buttonData"
+local mathf      = require "src.mathf"
+local globals    = require "src.globals"
 
 local slimeFuse = fusion:new(80, 600, 200, 200, 800, 'slime')
 
 function slimeFuse:update(delta)
   if input:isPressed(input.slash) then
+    mathf.playRandomPitch(globals.sounds.shoot)
+
     table.insert(
       self.player.bullets,
       bullet.new(

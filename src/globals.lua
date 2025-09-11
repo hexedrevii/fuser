@@ -12,17 +12,28 @@ local globals = {
 
   bulletSprite = love.graphics.newImage('assets/entities/bullet.png'),
 
+  -- Audio data
+  sounds = {
+    death = love.audio.newSource('assets/audio/death.wav', 'static'),
+    hurt  = love.audio.newSource('assets/audio/hurt.wav',  'static'),
+    jump  = love.audio.newSource('assets/audio/jump.wav',  'static'),
+    swing = love.audio.newSource('assets/audio/swing.wav', 'static'),
+    fuse  = love.audio.newSource('assets/audio/fuse.wav',  'static'),
+    click = love.audio.newSource('assets/audio/click.wav', 'static'),
+    shoot = love.audio.newSource('assets/audio/shoot.wav', 'static')
+  },
+
   ---@class palette
   ---@field orange number[]
-  ---@field lightYellow number[]
+  ---@field lighYellow number[]
   ---@field lightGreen number[]
   ---@field brown number[]
   ---@field darkPurple number[]
   palette = {
-    orange = {0.93,0.61,0.36},
+    orange     = {0.93,0.61,0.36},
     lighYellow = {0.99,1.00,0.75},
     lightGreen = {0.43,0.72,0.66},
-    brown = {0.47,0.27,0.28},
+    brown      = {0.47,0.27,0.28},
     darkPurple = {0.18,0.08,0.18}
   },
 

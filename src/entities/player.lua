@@ -154,7 +154,15 @@ function player:__input(delta)
   end
 end
 
-function player:fuse(fusion)
+function player:fuse(fusion, playsound)
+  if playsound == nil then
+    playsound = true
+  end
+
+  if playsound then
+    globals.sounds.fuse:play()
+  end
+
   self.activeFusion = fusion:set(self)
   self.sprite =  anim:new(love.graphics.newImage(fuseData[self.activeFusion.id].spritePath), 8, 8, fuseData[self.activeFusion.id].spd)
 end
@@ -175,6 +183,7 @@ function player:update(delta)
   else
     if input:isPressed(input.jump) then
       self.vy = -self.jmp
+      mathf.playRandomPitch(globals.sounds.jump)
     end
   end
 

@@ -30,7 +30,7 @@ function game:__debug_setPlayerPosition(x, y)
 end
 
 function game:__handleDeath()
-  local newEntities = {self.player }
+  local newEntities = {self.player}
   self.entities = newEntities
 
   for _, location in ipairs(self.entityLocations) do
@@ -38,7 +38,8 @@ function game:__handleDeath()
   end
 
   self.player.hp = self.player.maxHp
-  self.player:fuse(playerFuse)
+  self.player:fuse(playerFuse, false)
+  globals.sounds.death:play()
 
   self.player.vx = 0
   self.player.vy = 0
@@ -97,7 +98,7 @@ function game:init()
 
   self.state = __gameStates.unpaused
 
-  self:__debug_setPlayerPosition(344, 9)
+  -- self:__debug_setPlayerPosition(406, 12)
 
   self.mapX = rawWorld.width
   self.mapY = rawWorld.height
@@ -167,6 +168,9 @@ function game:update(delta)
           }, rect) then
             if not self.player.iframesActive then
               self.player.hp = self.player.hp - 1
+              if self.player.hp >= 1 then
+                mathf.playRandomPitch(globals.sounds.hurt)
+              end
 
               mathf.applyKnockback(self.player, entity.x, entity.y, 160)
 

@@ -7,7 +7,6 @@ local game             = require "src.world.game"
 
 local mainMenu = {}
 
-
 function mainMenu:init()
   self.map = cartographer.load('assets/maps/background.lua')
 

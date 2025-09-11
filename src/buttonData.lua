@@ -1,9 +1,12 @@
+local globals = require "src.globals"
 -- First is Y
 -- Second is X
 -- This is the position the button is found at.
 local buttonData = {
   [0] = {
     [377] = function(map)
+      globals.sounds.click:play()
+
       local layer = map.layers.solids
       layer:setTileAtGridPosition(377, 0, 17)
 
@@ -17,8 +20,23 @@ local buttonData = {
     end
   },
 
+  [1] = {
+    [534] = function(map)
+      globals.sounds.click:play()
+
+      local layer = map.layers.solids
+      layer:setTileAtGridPosition(534, 1, 20)
+
+      layer:setTileAtGridPosition(535, 12, 0)
+      layer:setTileAtGridPosition(536, 12, 0)
+      layer:setTileAtGridPosition(537, 12, 0)
+    end
+  },
+
   [4] = {
     [332] = function(map)
+      globals.sounds.click:play()
+
       local layer = map.layers.solids
       layer:setTileAtGridPosition(332, 4, 20)
 
@@ -30,6 +48,8 @@ local buttonData = {
 
   [5] = {
     [86] = function(map)
+      globals.sounds.click:play()
+
       local layer = map.layers.solids
       layer:setTileAtGridPosition(86, 5, 17)
 
@@ -41,6 +61,8 @@ local buttonData = {
 
   [9] = {
     [144] = function (map)
+      globals.sounds.click:play()
+
       local layer = map.layers.solids
       layer:setTileAtGridPosition(144, 9, 17)
 
@@ -51,6 +73,8 @@ local buttonData = {
     end,
 
     [389] = function(map)
+      globals.sounds.click:play()
+
       local layer = map.layers.solids
       layer:setTileAtGridPosition(389, 9, 20)
 
@@ -61,6 +85,8 @@ local buttonData = {
 
   [8] = {
     [309] = function (map)
+      globals.sounds.click:play()
+
       local layer = map.layers.solids
       layer:setTileAtGridPosition(309, 8, 20)
 
@@ -74,6 +100,8 @@ local buttonData = {
     end,
 
     [325] = function(map)
+      globals.sounds.click:play()
+
       local layer = map.layers.solids
       layer:setTileAtGridPosition(325, 8, 17)
 

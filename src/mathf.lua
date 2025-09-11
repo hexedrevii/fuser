@@ -45,6 +45,12 @@ function mathf.random(min, max)
   return min + (max - min) * math.random()
 end
 
+---Play a sound with a random range of pitch (makes repeating less jarring)
+---@param sound love.Source
+function mathf.playRandomPitch(sound)
+  sound:setPitch(mathf.random(0.5, 2))
+  sound:play()
+end
 
 function mathf.applyKnockback(entity, attackerX, attackerY, force)
   local dx = entity.x - attackerX
